@@ -14,6 +14,18 @@ describe Octokit::Client::Objects do
       expect(result.tree.first.path).to eq(".gitignore")
       assert_requested :get, github_url("/repos/sferik/rails_admin/git/trees/3cdfabd973bc3caac209cba903cfdb3bf6636bcd")
     end
+    it "gets a tree from a branch" do
+      result = @client.tree("sferik/rails_admin", "master")
+      expect(result.sha).to eq("3cdfabd973bc3caac209cba903cfdb3bf6636bcd")
+      expect(result.tree.first.path).to eq(".gitignore")
+      assert_requested :get, github_url("/repos/sferik/rails_admin/git/trees/master")
+    end
+    it "gets a tree from a branch with a slash" do
+      result = @client.tree("sferik/rails_admin", CGI::escape("branch/name"), :recursive => true)
+      expect(result.sha).to eq("3cdfabd973bc3caac209cba903cfdb3bf6636bcd")
+      expect(result.tree.first.path).to eq(".gitignore")
+      assert_requested :get, github_url("/repos/sferik/rails_admin/git/trees/branch%2Fname?recursive=true")
+    end
     it "gets a tree recursively" do
       result = @client.tree("sferik/rails_admin", "3cdfabd973bc3caac209cba903cfdb3bf6636bcd", :recursive => true)
       expect(result.sha).to eq("3cdfabd973bc3caac209cba903cfdb3bf6636bcd")
